@@ -1,0 +1,145 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>real_time Location Tracking</title>
+    <script  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmMQFCaEgYUrGQC7NqI6l-5kmwBfIy0Lw&callback=console.debug&libraries=maps,marker&v=beta"></script>
+    <style>
+        #map{
+            height: 600px;
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Real Time Location Tracking</h1>
+    <div id="map"></div>
+    <script>
+    var map;
+    var marker;
+    function initMap(){
+        var initialLocation={lat:19.07,lng:72.877}
+        map=new google.maps.Map(document.getElementById('map'),{
+            zoom :10,
+            center:initialLocation,
+            restriction:{
+                latLngBounds :{
+                north:20.0,
+                south:18.0,
+                east:73.9,
+                west:72.7
+                },
+            stricBounds:false   
+               
+            }
+
+        })
+    marker=new google.maps.Marker({
+        position:initialLocation,
+        map:map
+    })
+    updateLocation();
+
+
+
+    }
+    function updateLocation(){
+        fetch('/data/').then(response => response.json())
+        .then(data=> {
+            var newLocation = {
+                lat:data.latitude,
+                lng:data.longitude
+            }
+            marker.setPosition(newLocation)
+            map.setCenter(newLocation)
+        })
+        setTimeout(updateLocation,2000)
+    }
+    window.onload =initMap
+
+    </script>
+    
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Location Tracking</title>
+    <style>
+        #map {
+            height: 600px;
+            width: 100%; /* Fixed: added % unit */
+        }
+        body {
+            margin: 20px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>Real-Time Location Tracking</h1>
+    <div id="map"></div>
+    
+    <script>
+    var map;
+    var marker;
+    
+    function initMap() {
+        var initialLocation = {lat: 19.07, lng: 72.877};
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 10,
+            center: initialLocation,
+            restriction: {
+                latLngBounds: {
+                    north: 20.0,
+                    south: 18.0,
+                    east: 73.9,
+                    west: 72.7
+                },
+                strictBounds: false   
+            }
+        });
+        
+        marker = new google.maps.Marker({
+            position: initialLocation,
+            map: map
+        });
+        
+        updateLocation();
+    }
+    
+    function updateLocation() {
+        fetch('/data/')
+            .then(response => response.json()) // Fixed: lowercase 'j' in json()
+            .then(data => {
+                console.log("Received data:", data); // Add logging
+                var newLocation = {
+                    lat: parseFloat(data.latitude), // Ensure it's a number
+                    lng: parseFloat(data.longitude)
+                };
+                marker.setPosition(newLocation);
+                map.setCenter(newLocation);
+            })
+            .catch(error => {
+                console.error("Error fetching location data:", error);
+            });
+            
+        setTimeout(updateLocation, 2000);
+    }
+    
+    // Load Google Maps API properly
+    function loadGoogleMapsAPI() {
+        const script = document.createElement('script');
+        script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBmMQFCaEgYUrGQC7NqI6l-5kmwBfIy0Lw&callback=initMap&v=weekly";
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    }
+    
+    window.onload = loadGoogleMapsAPI;
+    </script>
+</body>
+</html>
